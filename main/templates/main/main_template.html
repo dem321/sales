@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" style='margin: 10px;'>
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock title %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% block head %}{% endblock head %}
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+        <a class="navbar-brand" href="/">FoodStore</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="">Меню</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">Корзина</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="">Профиль</a>
+            </li>
+            {% if user.is_staff %}
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">Admin</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+    </nav>
+    <div class='row'>{% block content %}{% endblock content %}</div>
+  </body>
+</html>

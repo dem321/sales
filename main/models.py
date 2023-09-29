@@ -14,10 +14,10 @@ class Employee(models.Model):
         verbose_name_plural = 'Сотрудники'
 
 class Dish(models.Model):
-    name = models.CharField('', max_length=30)
+    name = models.CharField('Название', max_length=30)
     components = models.CharField('Состав', max_length=30)
     price = models.IntegerField('Цена')
-    picture = models.ImageField('Изображение')
+    picture = models.ImageField('Изображение', upload_to='media/img')
 
     class Meta:
         verbose_name = 'Блюдо'

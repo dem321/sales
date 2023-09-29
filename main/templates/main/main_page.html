@@ -1,0 +1,13 @@
+{% extends "main/main_template.html" %}
+{% block title %}
+    FoodStore
+{% endblock title %}
+{% block head %}
+    {% load tags %}
+{% endblock head %}
+{% block content %}
+<h1 class='col-md-12'>Меню</h1>
+{% for dish in data %}
+    {% dish_display dish %}
+{% endfor %}
+{% endblock content %}
