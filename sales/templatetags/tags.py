@@ -5,6 +5,11 @@ from main.models import Dish
 
 register = template.Library()
 
-@register.inclusion_tag('tags/dish.html')
-def dish_display(dish):
-    return {'dish': dish}
+@register.inclusion_tag('tags/dish.html', takes_context=True)
+def dish_display(context, dish):
+    context['dish']=dish
+    return context
+
+@register.simple_tag
+def getattr_template(cart, item):
+    return cart[item]
