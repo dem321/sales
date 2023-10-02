@@ -12,4 +12,6 @@ def dish_display(context, dish):
 
 @register.simple_tag
 def getattr_template(cart, item):
-    return cart[item]
+    if item in cart:
+        return cart[item]
+    return 0

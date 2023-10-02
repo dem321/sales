@@ -1,6 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
-from .models import Dish
+from dal import autocomplete
+
+from .models import Dish, Employee
+from .forms import OrderForm
+
+class EmployeeAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Employee.objects.all()
+        if self.q:
+            qs = qs.filter(second_name__istartswith=self.q)
+        return qs
 
 # Create your views here.
 def index(request):
@@ -15,4 +26,20 @@ def index(request):
     return render(request, 'main/main_page.html', {'data': data, 'request': request})
 
 def basket(request):
-    return render(request, 'main/basket.html')
+    qs = Dish.objects.all()
+    for dish in Dish.objects.all():
+        if dish.name not in request.session['cart']:
+            qs = qs.exclude(id=dish.id)
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save(request=request)
+        else: return HttpResponse(form.errors)
+        return redirect('idx')
+    else:
+        form=OrderForm()
+    return render(request, 'main/basket.html', {'form':form, 'data': qs})
+
+def clear_session(request):
+    request.session.flush()
+    return redirect('idx')

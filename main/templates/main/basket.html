@@ -1,11 +1,21 @@
 {% extends "main/main_template.html" %}
+{% load bootstrap5 %}
 {% block title %}
 Корзина
 {% endblock title %}
 {% block head %}
+    {% load tags %}
+    {{ form.media }}
 {% endblock head %}
 {% block content %}
 <h1> Корзина </h1>
-
+<form method='post'>
+    {% csrf_token %}
+    {% bootstrap_form form layout='horizontal' field_class='col-md-3' %}
+    <button type='submit' class='btn btn-success col-md-1' style='margin:10px;'>Send</button>
+</form>
+{% for dish in data %}
+    {% dish_display dish %}
+{% endfor %}
 {% endblock content %}
 

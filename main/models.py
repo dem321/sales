@@ -13,6 +13,9 @@ class Employee(models.Model):
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
 
+    def __str__(self):
+        return self.second_name + ' ' + self.first_name + ' ' + self.middle_name
+
 class Dish(models.Model):
     name = models.CharField('Название', max_length=30)
     components = models.CharField('Состав', max_length=30)
@@ -34,6 +37,7 @@ class Order(models.Model):
 class DishOrder(models.Model):
     order = models.ForeignKey(Order, models.CASCADE, verbose_name='Заказ')
     dish = models.ForeignKey(Dish, models.CASCADE, verbose_name='Блюдо')
+    count = models.PositiveIntegerField('Количество', default=1)
 
     class Meta:
         verbose_name = 'БлюдоЗаказа'
