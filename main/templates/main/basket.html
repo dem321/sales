@@ -14,8 +14,25 @@
     {% bootstrap_form form layout='horizontal' field_class='col-md-3' %}
     <button type='submit' class='btn btn-success col-md-1' style='margin:10px;'>Send</button>
 </form>
-{% for dish in data %}
-    {% dish_display dish %}
-{% endfor %}
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Picture</th>
+        <th scope="col">Name</th>
+        <th scope="col">Ingridients</th>
+        <th scope="col">Count</th>
+        <th scope="col">Total price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dish in data %}
+      <tr>
+        <th scope="row"><img src='{{ dish.picture.url }}' class='img-fluid'></th>
+        <td>{{ dish.name }}</td>
+        <td>{{ dish.components }}</td>
+        <td>{% getattr_template request.session.cart dish.name %}</td>
+        <td>{% get_price dish request.session.cart %}</td>
+      </tr>
+      {% endfor %}
 {% endblock content %}
 

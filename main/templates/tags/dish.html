@@ -2,7 +2,7 @@
 <div class='col-md-2 row'>
     <form method='post'>
         {% csrf_token %}
-        <img src='{{ dish.picture.url }}' class='col-md-12'>
+        <img src='{{ dish.picture.url }}' class='col-md-12' style=>
         <div class='col-md-12' style='text-align:center;'>{{ dish.name }}</div>
         <div class='btn-group me-2' class='col-md-12'>
             <button type='submit' class='btn btn-primary' name='dish' value='{{dish.name}}_-1'>-1</button>

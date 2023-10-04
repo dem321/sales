@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth import login, authenticate 
+from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm
 
 from dal import autocomplete
 
-from .models import Dish, Employee
-from .forms import OrderForm
+from .models import Dish, Employee, Order, DishOrder
+from .forms import OrderForm, RegistrationForm
 
 class EmployeeAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -13,7 +16,6 @@ class EmployeeAutocomplete(autocomplete.Select2QuerySetView):
             qs = qs.filter(second_name__istartswith=self.q)
         return qs
 
-# Create your views here.
 def index(request):
     data = Dish.objects.order_by('-id')
     cart = request.session.get('cart', None)
@@ -22,24 +24,65 @@ def index(request):
     request.session['cart'] = cart
     if request.method == 'POST':
         dish_name, dish_count = request.POST.get('dish').split('_')
-        request.session['cart'][dish_name] = request.session['cart'].get(dish_name, 0)+int(dish_count)
+        if request.session['cart'].get(dish_name, 0)+int(dish_count) >= 0:
+            request.session['cart'][dish_name] = request.session['cart'].get(dish_name, 0)+int(dish_count)
     return render(request, 'main/main_page.html', {'data': data, 'request': request})
 
 def basket(request):
     qs = Dish.objects.all()
     for dish in Dish.objects.all():
-        if dish.name not in request.session['cart']:
+        if dish.name not in request.session['cart'] or request.session['cart'].get(dish.name, 0) < 1:
             qs = qs.exclude(id=dish.id)
     if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            form.save(request=request)
-        else: return HttpResponse(form.errors)
-        return redirect('idx')
-    else:
+        if 'dish' in request.POST:
+            dish_name, dish_count = request.POST.get('dish').split('_')
+            if request.session['cart'][dish_name]+int(dish_count) >= 0:
+                request.session['cart'][dish_name] = request.session['cart'][dish_name]+int(dish_count)
+            form=OrderForm()    
+        else:
+            form = OrderForm(request.POST)
+            if form.is_valid():
+                form.save(request=request)
+            else: return HttpResponse(form.errors)
+            return redirect('idx')
+    else: 
         form=OrderForm()
     return render(request, 'main/basket.html', {'form':form, 'data': qs})
 
 def clear_session(request):
-    request.session.flush()
-    return redirect('idx')
+    del request.session['cart']
+    return redirect('idx') 
+
+def profile(request):
+    orders = Order.objects.filter(user=request.user)          
+    return render(request, 'main/profile.html', {'orders':orders})
+
+def register(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Регистрация прошла успешно." )
+            return redirect("idx")
+        messages.error(request, "Неудачная регистрация.")
+    form = RegistrationForm()
+    return render (request, "main/register.html", {"form":form})
+
+def login_view(request):
+	if request.method == "POST":
+		form = AuthenticationForm(request, data=request.POST)
+		if form.is_valid():
+			username = form.cleaned_data.get('username')
+			password = form.cleaned_data.get('password')
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				login(request, user)
+				messages.info(request, f"Вы вошли как {username}.")
+				return redirect("idx")
+			else:
+				messages.error(request,"Неверное имя пользователя или пароль")
+		else:
+			messages.error(request,"Неверное имя пользователя или пароль")
+	form = AuthenticationForm()
+	return render(request, "main/login.html", {"form":form})

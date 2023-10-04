@@ -1,0 +1,10 @@
+{% load tags %}
+{% for el in order %}
+    <tr>
+        <td scope="col"><img src='{{ el.dish.picture.url }}' class='img-fluid'></td>
+        <td scope="col">{{ el.dish.name }}</td>
+        <td scope="col">{{ el.dish.components }}</td>
+        <td scope="col">{{ el.count }}</td>
+        <td scope="col">{{ el.dish.price }}</td>
+    </tr>
+{% endfor %}

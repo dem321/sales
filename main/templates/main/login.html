@@ -1,0 +1,16 @@
+{% extends "main/main_template.html" %}
+{% load bootstrap5 %}
+{% block title %}
+Авторизация
+{% endblock title %}
+{% block head %}
+    {% load tags %}
+{% endblock head %}
+{% block content %}
+<form method='post'>
+    {% csrf_token %}
+    {% bootstrap_form form%}
+    <button class="btn btn-primary" type="submit">Авторизоваться</button>
+    <p class="text-center">Если у вас нет учетной записи <a href="{% url 'registration' %}">зарегистрируйтесь</a></p>
+</form>
+{% endblock %}

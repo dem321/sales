@@ -1,11 +1,14 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from .views import index, basket, EmployeeAutocomplete, clear_session
+from . import views
 
 urlpatterns = [
-    path('', index, name='idx'),
-    path('basket', basket, name='basket'),
-    path('clear_session', clear_session, name='clear_session'),
-    path('employee-autocomplete/', EmployeeAutocomplete.as_view(), name='employee-autocomplete'),
+    path('', views.index, name='idx'),
+    path('basket', views.basket, name='basket'),
+    path('clear_session', views.clear_session, name='clear_session'),
+    path('profile', views.profile, name='profile'),
+    path('registration', views.register, name='registration'),
+    path('login', views.login_view, name='login'),
+    path('employee-autocomplete/', views.EmployeeAutocomplete.as_view(), name='employee-autocomplete'),
 ]
