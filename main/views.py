@@ -106,5 +106,4 @@ def report(request):
             table[dish]['total'] = int(table[dish]['count']) * int(table[dish]['price'])
             total += table[dish]['total']
     form = ReportForm()
-    print(table)
     return render (request, "main/report.html", {"form":form, 'table':table, 'total':total})
