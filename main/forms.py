@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from bootstrap_datepicker_plus.widgets import DateTimePickerInput
+from bootstrap_datepicker_plus.widgets import DateTimePickerInput, DatePickerInput
 
 from .models import Order, DishOrder, Dish
 
@@ -43,3 +43,6 @@ class RegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class ReportForm(forms.Form):
+    date = forms.DateField(required=True, widget=DatePickerInput())

@@ -10,5 +10,6 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('registration', views.register, name='registration'),
     path('login', views.login_view, name='login'),
+    path('report', views.report, name='report'),
     path('employee-autocomplete/', views.EmployeeAutocomplete.as_view(), name='employee-autocomplete'),
 ]

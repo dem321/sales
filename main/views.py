@@ -6,8 +6,10 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from dal import autocomplete
 
+from datetime import datetime
+
 from .models import Dish, Employee, Order, DishOrder
-from .forms import OrderForm, RegistrationForm
+from .forms import OrderForm, RegistrationForm, ReportForm
 
 class EmployeeAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -63,9 +65,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Регистрация прошла успешно." )
             return redirect("idx")
-        messages.error(request, "Неудачная регистрация.")
     form = RegistrationForm()
     return render (request, "main/register.html", {"form":form})
 
@@ -86,3 +86,25 @@ def login_view(request):
 			messages.error(request,"Неверное имя пользователя или пароль")
 	form = AuthenticationForm()
 	return render(request, "main/login.html", {"form":form})
+
+def report(request):
+    table = {}
+    total = 0
+    if 'date' in request.GET:
+        date = datetime.strptime(request.GET['date'], '%Y-%m-%d')
+        orders = Order.objects.filter(date__year=date.strftime('%Y'), date__month=date.strftime('%m'), date__day=date.strftime('%d') )
+        for order in orders:
+            dishes = DishOrder.objects.filter(order=order)
+            for dish in dishes:
+                if dish.dish in table:
+                    table[dish.dish]['count'] += dish.count
+                else:
+                    table[dish.dish] = {}
+                    table[dish.dish]['count'] = dish.count
+                    table[dish.dish]['price'] = dish.dish.price
+        for dish in table:
+            table[dish]['total'] = int(table[dish]['count']) * int(table[dish]['price'])
+            total += table[dish]['total']
+    form = ReportForm()
+    print(table)
+    return render (request, "main/report.html", {"form":form, 'table':table, 'total':total})

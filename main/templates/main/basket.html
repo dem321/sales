@@ -30,7 +30,7 @@
         <th scope="row"><img src='{{ dish.picture.url }}' class='img-fluid'></th>
         <td>{{ dish.name }}</td>
         <td>{{ dish.components }}</td>
-        <td>{% getattr_template request.session.cart dish.name %}</td>
+        <td>{% get_basket_count request.session.cart dish.name %}</td>
         <td>{% get_price dish request.session.cart %}</td>
       </tr>
       {% endfor %}

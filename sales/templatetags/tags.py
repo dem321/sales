@@ -11,14 +11,14 @@ def dish_display(context, dish):
     return context
 
 @register.simple_tag
-def getattr_template(cart, item):
+def get_basket_count(cart, item):
     if item in cart:
         return cart[item]
     return 0
 
 @register.simple_tag
 def get_price(dish, cart):
-    return (dish.price * int(getattr_template(cart, dish.name)))
+    return (dish.price * int(get_basket_count(cart, dish.name)))
 
 @register.inclusion_tag('tags/history_dish.html')
 def history_dish_display(order):
@@ -26,6 +26,5 @@ def history_dish_display(order):
     return {'order':order}
 
 @register.simple_tag
-def get_count(order, dish):
-    print(order)
-    return 0
+def get_report_data(table, dish, obj):
+    return table[dish][obj]
