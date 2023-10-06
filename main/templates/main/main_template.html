@@ -20,9 +20,15 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url "basket" %}">Корзина</a>
             </li>
+            {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'profile' %}">Профиль</a>
             </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Авторизоваться</a>
+            </li>
+            {% endif %}
             {% if user.is_staff %}
             <li class="nav-item">
               <a class="nav-link" href="/admin">Admin</a>
